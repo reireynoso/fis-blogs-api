@@ -1,18 +1,31 @@
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
-    first_name: {
-        type: String
+    githubId: {
+        type: String,
+        required: true
     },
-    last_name: {
-        type: String
+    name: {
+        type:String
     },
     email: {
         type:String,
-        unique: true
+        required: true
     },
     admin: {
+        type: Boolean,
+        default: false
+    },
+    image_url: {
+        type: String
+    },
+    // check if any has been updated on github since last time. If it has update it on our db
+    lastUpdated: {
         type: String,
-        default: "none"
+        required: true
     }
 })
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;

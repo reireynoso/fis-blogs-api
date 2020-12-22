@@ -3,16 +3,16 @@ const mongoose = require('mongoose');
 const blogSchema = mongoose.Schema({
     title: {
         type: String,
-        require: true
+        required: true
     },
     link: {
         type: String,
-        require: true,
+        required: true,
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        require: true
+        required: true
     },
     tags: {
         type: mongoose.Schema.Types.Mixed,
@@ -20,7 +20,7 @@ const blogSchema = mongoose.Schema({
     },
     cohort: {
         type: String,
-        require: true,
+        required: true,
     },
     image: {
         type: String
@@ -29,6 +29,8 @@ const blogSchema = mongoose.Schema({
         type: Boolean,
         default: false
     }
+}, {
+    timestamps: true
 })
 
 const Blog = mongoose.model("Blog", blogSchema);
