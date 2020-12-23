@@ -1,6 +1,7 @@
 const express = require("express");
 const router = new express.Router();
 const axios = require('axios');
+const jwt = require('jsonwebtoken');
 
 router.post("/user/login", async(req,res) => {
     // after authorizing from github, we get redirected to this route (defined in the Github OAuth for the application)
@@ -76,12 +77,28 @@ router.post("/user/login", async(req,res) => {
         //     created_at: '',
         //     updated_at: ''
         //   }
-        const data = userInfo.data
-        res.send(data)
+        const userData = userInfo.data
+        // console.log(res.cookie)
+        // res.cookie('token', "testing123", { 
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: true
+        // });
+
+        const token = jwt.sign({id: userData.id.toString()}, process.env.JWT_SECRET)
+
+        res.send({userData, token})
     } catch (error) {
         // console.log(error)
         res.send('waht')
     }
+})
+
+router.get('/auto_login', (req,res) => {
+    const token = req.header('Authorization').replace('Bearer ', '');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded);
+    // {id: '32455566', iat: 12344343 (not sure what this is)}
 })
 
 module.exports = router;
