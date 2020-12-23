@@ -2,6 +2,8 @@ const express = require("express");
 const router = new express.Router();
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
+const auth = require('../middleware/auth');
+const User = require('../models/User');
 
 router.post("/user/login", async(req,res) => {
     // after authorizing from github, we get redirected to this route (defined in the Github OAuth for the application)
@@ -78,27 +80,22 @@ router.post("/user/login", async(req,res) => {
         //     updated_at: ''
         //   }
         const userData = userInfo.data
-        // console.log(res.cookie)
-        // res.cookie('token', "testing123", { 
-        //     httpOnly: true,
-        //     secure: true,
-        //     sameSite: true
-        // });
+        // console.log(userData.id)
+        // from the user information returned from Github, check if a user with that github id exists in the db
+        const user = User.findOrCreateOrUpdate(userData)
+         // if exist, return that user info from your db. Info should NOT be from github response.
+        // if not exist, create with certain data
 
         const token = jwt.sign({id: userData.id.toString()}, process.env.JWT_SECRET)
-
-        res.send({userData, token})
+        res.send({user, token})
     } catch (error) {
         // console.log(error)
-        res.send('waht')
+        res.send({error})
     }
 })
 
-router.get('/auto_login', (req,res) => {
-    const token = req.header('Authorization').replace('Bearer ', '');
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded);
-    // {id: '32455566', iat: 12344343 (not sure what this is)}
+router.get('/auto_login', auth, (req,res) => {
+    res.send({user: req.user})
 })
 
 module.exports = router;
