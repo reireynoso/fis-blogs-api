@@ -29,19 +29,22 @@ userSchema.methods.toJSON = function(){
     const user = this;
     const userObject = user.toObject();
     delete userObject.githubId;
+    delete userObject._id;
+    delete userObject.lastUpdated;
 
     return userObject;
 }
 
 userSchema.statics.findOrCreateOrUpdate = async(userData) => {
     // if exist, return that user info from your db. Info should NOT be from github response.
+   
     let user = await User.findOne({
         githubId: userData.id
     })
-    // console.log(user);
+
     const {id, avatar_url,name,email,updated_at} = userData;
     // check if we need to update
-    if(user.lastUpdated !== userData.updated_at){
+    if(user && user.lastUpdated !== userData.updated_at){
         // update all fields for the document except the githubid. That shouldn't change on the Github side
         try {
             user.name = name;

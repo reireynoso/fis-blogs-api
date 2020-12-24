@@ -9,8 +9,8 @@ const auth = async(req,res,next) => {
         const user = await User.findOne({githubId: decoded.id})
         // console.log('auth', user)
         if(!user){
-            console.log('error?')
-            throw new Error()
+            
+            throw "Not a registered user. Register by logging in through Github"
         }
 
         req.token = token 
@@ -18,7 +18,7 @@ const auth = async(req,res,next) => {
 
         next()
     }catch(e){
-        res.status(401).send({errors: ['Please Login.']})
+        res.status(401).send({errors: [e]})
     }
 }
 

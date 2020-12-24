@@ -1,10 +1,7 @@
-# FIS Blogs Management App
+# FIS Blogs Management App Server
 
 # ToDo
-- Store key user information in your database
-- Remove the code from the URL
-- Work out sessions and cookies to persist connection
-- Test with react
+- Start implementing blogs routes
 
 # Setting Up Github OAuth
 - Register app on github Oauth to grab client id and secret

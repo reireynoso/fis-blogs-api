@@ -6,7 +6,7 @@ const userRoute = require('./routes/User');
 process.env.NODE_ENV === 'production' ? null : require('dotenv').config({path: './.env'});
 const connectDB = require('./db/mongoose')
 
-connectDB()
+connectDB();
 
 const app = express();
 const port = process.env.PORT || 4000;
