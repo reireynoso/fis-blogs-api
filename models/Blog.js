@@ -19,7 +19,8 @@ const blogSchema = mongoose.Schema({
         default: {}
     },
     cohort: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Cohort",
         required: true,
     },
     image: {

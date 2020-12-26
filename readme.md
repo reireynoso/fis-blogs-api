@@ -1,6 +1,7 @@
 # FIS Blogs Management App Server
 
 # ToDo
+- implement cohort model
 - Start implementing blogs routes
 
 # Setting Up Github OAuth
