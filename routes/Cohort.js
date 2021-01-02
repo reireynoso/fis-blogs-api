@@ -3,7 +3,7 @@ const router = new express.Router();
 const Cohort = require('../models/Cohort');
 const auth = require('../middleware/auth');
 
-router.get("/cohort", async(req,res) => {
+router.get("/cohort", async(_,res) => {
 
     const cohorts = await Cohort.find({}).populate('admins'); // excludes the _id property
 
@@ -22,12 +22,10 @@ router.post("/cohort/new", auth, async(req,res) => {
         const cohort = new Cohort({
             name: req.body.name
         })
-
         cohort.admins.push(req.user._id)
         await cohort.save()
         res.status(201).send(cohort)
     } catch (error) {
-        console.log(error)
         res.send({error})       
     }
 })

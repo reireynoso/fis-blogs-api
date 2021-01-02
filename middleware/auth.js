@@ -10,7 +10,7 @@ const auth = async(req,res,next) => {
         // console.log('auth', user)
         if(!user){
             
-            throw "Not a registered user. Register by logging in through Github"
+            throw new Error("Not a registered user. Register by logging in through Github");
         }
 
         req.token = token 
@@ -18,7 +18,7 @@ const auth = async(req,res,next) => {
 
         next()
     }catch(e){
-        res.status(401).send({errors: [e]})
+        res.status(401).send({error: e.message})
     }
 }
 
