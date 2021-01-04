@@ -21,10 +21,21 @@ router.get("/blog/me", auth, async(req,res) => {
         const userBlogs = await Blog.find({
             user: req.user._id
         })
-        console.log(userBlogs);
+        // console.log(userBlogs);
         res.send(userBlogs)
     } catch (error) {
         
+    }
+})
+
+router.post("/blog/delete/:id", async(req,res) => {
+    try {
+        await Blog.deleteOne({_id: req.params.id})   
+        res.send({message: "Blog deleted successfully"})
+    } catch (error) {
+        res.send({
+            error
+        })
     }
 })
 

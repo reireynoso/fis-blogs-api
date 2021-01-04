@@ -34,6 +34,14 @@ const blogSchema = mongoose.Schema({
     timestamps: true
 })
 
+blogSchema.statics.findUserBlogs = async(user) => {
+    const userBlogs = await Blog.find({
+        user: user._id
+    }).populate('user')
+
+    return userBlogs
+}
+
 const Blog = mongoose.model("Blog", blogSchema);
 
 module.exports = Blog;

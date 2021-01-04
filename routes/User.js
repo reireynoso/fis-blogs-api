@@ -4,6 +4,7 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
 const User = require('../models/User');
+const Blog = require('../models/Blog');
 
 router.post("/user/login", async(req,res) => {
     // after authorizing from github, we get redirected to this route (defined in the Github OAuth for the application)
@@ -85,17 +86,21 @@ router.post("/user/login", async(req,res) => {
         const user = await User.findOrCreateOrUpdate(userData)
          // if exist, return that user info from your db. Info should NOT be from github response.
         // if not exist, create with certain data
+        // find blogs associated with user
+        const userBlogs = await Blog.findUserBlogs(user);
         
         const token = jwt.sign({id: userData.id.toString()}, process.env.JWT_SECRET)
-        res.send({user, token})
+        res.send({user, token, userBlogs})
     } catch (error) {
         // console.log(error)
         res.send({error})
     }
 })
 
-router.get('/auto_login', auth, (req,res) => {
-    res.send({user: req.user})
+router.get('/auto_login', auth, async(req,res) => {
+    // find blogs associated with user
+    const userBlogs = await Blog.findUserBlogs(req.user);
+    res.send({user: req.user, userBlogs});
 })
 
 module.exports = router;
