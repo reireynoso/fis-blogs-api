@@ -87,10 +87,10 @@ router.post("/user/login", async(req,res) => {
          // if exist, return that user info from your db. Info should NOT be from github response.
         // if not exist, create with certain data
         // find blogs associated with user
-        const userBlogs = await Blog.findUserBlogs(user);
-        
+        // const userBlogs = await Blog.findUserBlogs(user);
+        const blogs = await Blog.find({}).populate('user')
         const token = jwt.sign({id: userData.id.toString()}, process.env.JWT_SECRET)
-        res.send({user, token, userBlogs})
+        res.send({user, token, blogs})
     } catch (error) {
         // console.log(error)
         res.send({error})
@@ -99,8 +99,9 @@ router.post("/user/login", async(req,res) => {
 
 router.get('/auto_login', auth, async(req,res) => {
     // find blogs associated with user
-    const userBlogs = await Blog.findUserBlogs(req.user);
-    res.send({user: req.user, userBlogs});
+    // const userBlogs = await Blog.findUserBlogs(req.user);
+    const blogs = await Blog.find({}).populate('user')
+    res.send({user: req.user, blogs});
 })
 
 module.exports = router;
