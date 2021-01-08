@@ -29,9 +29,8 @@ userSchema.methods.toJSON = function(){
     const user = this;
     const userObject = user.toObject();
     delete userObject.githubId;
-    delete userObject._id;
+    // delete userObject._id;
     delete userObject.lastUpdated;
-
     return userObject;
 }
 

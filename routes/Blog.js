@@ -16,17 +16,17 @@ router.get("/testing", (req,res) => {
     }
 })
 
-router.get("/blog/me", auth, async(req,res) => {
-    try {
-        const userBlogs = await Blog.find({
-            user: req.user._id
-        })
-        // console.log(userBlogs);
-        res.send(userBlogs)
-    } catch (error) {
+// router.get("/blog/me", auth, async(req,res) => {
+//     try {
+//         const userBlogs = await Blog.find({
+//             user: req.user._id
+//         })
+//         // console.log(userBlogs);
+//         res.send(userBlogs)
+//     } catch (error) {
         
-    }
-})
+//     }
+// })
 
 router.post("/blog/delete/:id", async(req,res) => {
     try {
@@ -104,6 +104,15 @@ router.post("/blog/new", auth, async(req,res) => {
         }
 
         res.send({error: errorObject})   
+    }
+})
+
+router.get("/blog/all", async(req,res) => {
+    try {
+        const blogs = await Blog.find({}).populate('user');
+        res.send({blogs})
+    } catch (error) {
+        res.send({error})
     }
 })
 
