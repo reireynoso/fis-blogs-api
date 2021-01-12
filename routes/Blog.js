@@ -110,7 +110,7 @@ router.post("/blog/new", auth, async(req,res) => {
 router.get("/initial-data", async(req,res) => {
     try {
         const cohorts = await Cohort.find({}).populate('admins'); 
-        const blogs = await Blog.find({}).populate('user');
+        const blogs = await Blog.find({}).populate('user').populate('cohort');
         res.send({blogs,cohorts})
     } catch (error) {
         res.send({error})
