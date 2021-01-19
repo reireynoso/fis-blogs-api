@@ -39,6 +39,31 @@ router.post("/blog/delete/:id", async(req,res) => {
     }
 })
 
+router.patch("/blog/approve/:id", auth, async(req,res) => {
+    try{
+        const blog = await Blog.findById(req.params.id);
+        // check if auth is an admin user. if not send error
+        if(!req.user.admin){
+            throw new Error("You're not an admin")
+        }
+
+        if(!blog){
+            throw new Error("Blog does not exist in the database")
+        }
+
+        if(blog.approved){
+            throw new Error("Blog already approved")
+        }
+
+        blog.approved = true;
+        await blog.save();
+
+        res.send({message: "Approval success"})
+    }catch(error){
+        res.status(400).send({error: error.message})
+    }
+})
+
 router.post("/blog/new", auth, async(req,res) => {
     try {
         // const {data} = await axios.get("https://medium.com/@reireynoso/drag-ndrop-with-react-beautiful-dnd-73014e5937f2")
