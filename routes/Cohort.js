@@ -30,4 +30,30 @@ router.post("/cohort/new", auth, async(req,res) => {
     }
 })
 
+router.patch("/cohort/:id", async(req,res) => {
+    const cohort = await Cohort.findById(req.params.id);
+    console.log(req.body)
+    console.log(cohort);
+    try{
+        const {action, userId} = req.body;
+
+        if(action !== "remove" && action !=="add") throw new Error("Not a valid action");
+
+        if(action === "remove"){
+            // const removedUser = cohort.admins.filter(admin => admin.toString() !== userId);
+            // cohort.admins = removedUser
+        }
+        
+        if(action === "add"){
+            // do something
+        }
+
+        // save changes
+        res.status(200).send()
+    }
+    catch(error){
+        res.status(401).send({error: error.message})
+    }
+})
+
 module.exports = router;
