@@ -28,13 +28,14 @@ router.get("/testing", (req,res) => {
 //     }
 // })
 
-router.post("/blog/delete/:id", async(req,res) => {
+router.post("/blog/delete/:id", auth, async(req,res) => {
     try {
+        if(!req.user.admin) throw new Error("User is not an admin. You cannot perform this action.")
         await Blog.deleteOne({_id: req.params.id})   
         res.send({message: "Blog deleted successfully"})
     } catch (error) {
         res.send({
-            error
+            error: error.path ? "Blog does not exist." : error.message 
         })
     }
 })
@@ -44,21 +45,21 @@ router.patch("/blog/approve/:id", auth, async(req,res) => {
         const blog = await Blog.findById(req.params.id);
         // check if auth is an admin user. if not send error
         if(!req.user.admin){
-            throw new Error("You're not an admin")
+            throw new Error("You're not an admin! You cannot perform this action.")
         }
 
         if(!blog){
-            throw new Error("Blog does not exist in the database")
+            throw new Error("Blog does not exist in the database.")
         }
 
         if(blog.approved){
-            throw new Error("Blog already approved")
+            throw new Error("Blog already approved.")
         }
 
         blog.approved = true;
         await blog.save();
 
-        res.send({message: "Approval success"})
+        res.send({message: "Approval success."})
     }catch(error){
         res.status(400).send({error: error.message})
     }

@@ -32,12 +32,16 @@ router.post("/cohort/new", auth, async(req,res) => {
 
 router.patch("/cohort/:id", async(req,res) => {
     const cohort = await Cohort.findById(req.params.id);
-    console.log(req.body)
-    console.log(cohort);
+    // console.log(req.body)
+    // console.log(cohort);
     try{
+        if(!cohort) throw new Error("Cohort does not exist");
+        
         const {action, userId} = req.body;
 
-        if(action !== "remove" && action !=="add") throw new Error("Not a valid action");
+        if(!userId) throw new Error("No admin user provided");
+
+        if(action !== "remove" && action !=="add" && !action) throw new Error("Not a valid action");
 
         if(action === "remove"){
             // const removedUser = cohort.admins.filter(admin => admin.toString() !== userId);
