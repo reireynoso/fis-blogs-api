@@ -97,6 +97,18 @@ router.post("/user/login", async(req,res) => {
     }
 })
 
+router.get('/users/all', auth, async(req,res) => {
+    try {
+        if(!req.user.admin) throw new Error("Only admin permitted to view.")
+        const users = await User.find({});
+        res.send({users})
+    } catch (error) {
+        res.status(401).send({
+            error: error.message
+        })        
+    }
+})
+
 router.get('/auto_login', auth, async(req,res) => {
     // find blogs associated with user
     // const userBlogs = await Blog.findUserBlogs(req.user);
