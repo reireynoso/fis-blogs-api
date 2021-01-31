@@ -36,7 +36,7 @@ router.patch("/cohort/:id", async(req,res) => {
     // console.log(cohort);
     try{
         if(!cohort) throw new Error("Cohort does not exist");
-        
+
         const {action, userId} = req.body;
 
         if(!userId) throw new Error("No admin user provided");
@@ -44,12 +44,13 @@ router.patch("/cohort/:id", async(req,res) => {
         if(action !== "remove" && action !=="add" && !action) throw new Error("Not a valid action");
 
         if(action === "remove"){
-            // const removedUser = cohort.admins.filter(admin => admin.toString() !== userId);
-            // cohort.admins = removedUser
+            const removedUser = cohort.admins.filter(admin => admin.toString() !== userId);
+            cohort.admins = removedUser
         }
         
         if(action === "add"){
             // do something
+            cohort.admins.push(userId);
         }
 
         // save changes
