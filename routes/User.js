@@ -117,4 +117,19 @@ router.get('/auto_login', auth, async(req,res) => {
     res.send({user: req.user});
 })
 
+router.patch('/user/:id', auth, async(req,res) => {
+    const user = await User.findById(req.params.id);
+
+    try {
+        if(!user) throw new Error("User does not exist.");
+        if(!req.user.admin) throw new Error("You're not permitted to perform this action.")
+        user.admin = !user.admin;
+        await user.save();
+        res.status(200).send()
+        
+    } catch (error) {
+        res.status(401).send({error: error.message})
+    }
+})
+
 module.exports = router;
