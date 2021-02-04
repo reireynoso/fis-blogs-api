@@ -8,7 +8,7 @@ const acceptableTags = require('../data/tags');
 const Cohort = require('../models/Cohort');
 const Blog = require('../models/Blog');
 
-router.get("/testing", (req,res) => {
+router.get("/testing", (_,res) => {
     try {
         res.send("tested")
     } catch (error) {

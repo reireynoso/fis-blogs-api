@@ -13,7 +13,7 @@ const cohortSchema = mongoose.Schema({
     }]
 })
 
-cohortSchema.post('save', function(error, doc, next) {
+cohortSchema.post('save', function(error, _, next) {
     //handles errors when attempting to save a cohort instance upon creation
     let errors = "";
     if(error.name === "MongoError" && error.code === 11000){

@@ -4,7 +4,6 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
 const User = require('../models/User');
-const Blog = require('../models/Blog');
 
 router.post("/user/login", async(req,res) => {
     // after authorizing from github, we get redirected to this route (defined in the Github OAuth for the application)
