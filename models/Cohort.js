@@ -5,7 +5,8 @@ const cohortSchema = mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        trim: true
+        trim: true,
+        uppercase: true
     },
     admins: [{
         type: mongoose.Schema.Types.ObjectId,

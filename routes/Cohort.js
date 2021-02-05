@@ -18,13 +18,15 @@ const User = require('../models/User');
 
 router.post("/cohort/new", auth, async(req,res) => {
     // check if user is admin. if not, throw error
-    // console.log(req.user);
     try {
-        const cohort = new Cohort({
-            name: req.body.name
+        const newCohort = new Cohort({
+            name: req.body.name.toUpperCase()
         })
-        cohort.admins.push(req.user._id)
-        await cohort.save()
+        newCohort.admins.push(req.user._id)
+        await newCohort.save()
+
+        const cohort = await Cohort.findOne({_id: newCohort._id}).populate("admins");
+
         res.status(201).send(cohort)
     } catch (error) {
         res.send({error})       
