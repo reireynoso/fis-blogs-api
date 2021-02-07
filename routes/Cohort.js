@@ -68,4 +68,28 @@ router.patch("/cohort/:id", auth, async(req,res) => {
     }
 })
 
+router.patch("/cohort/:id/edit/name", auth, async(req,res) => {
+    const cohort = await Cohort.findById(req.params.id);
+
+    try{
+        if(!cohort) throw new Error("Cohort does not exist");
+
+        const {name} = req.body;
+
+        if(!name) throw new Error("Name cannot be blank");
+        if(cohort.name === name.toUpperCase()) throw new Error("Same name. No changes made.")
+        
+        const match = await Cohort.findOne({name: name.toUpperCase()})
+        if(match) throw new Error("A cohort with that name already exists.");
+
+        cohort.name = name;
+        // save changes
+        await cohort.save();
+        res.status(200).send()
+    }
+    catch(error){
+        res.status(401).send({error: error.message})
+    }
+})
+
 module.exports = router;
