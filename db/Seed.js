@@ -95,58 +95,58 @@ const data = async() => {
     Blog.collection.deleteMany({})
     Cohort.collection.deleteMany({})
     
-    const users = await User.insertMany([
-        {
-            admin: true,
-            githubId: "34077185",
-            name:"Reinald Reynoso",
-            email:null,
-            image_url:"https://avatars3.githubusercontent.com/u/34077185?v=4",
-            lastUpdated:"2021-01-04T21:53:24Z"
-        },
-        {
-            admin: true,
-            githubId: "29000122",
-            name:"Another Admin",
-            email:null,
-            image_url:"https://avatars3.githubusercontent.com/u/29000122?v=4",
-            lastUpdated:"2021-01-04T21:53:24Z"
-        },
-        {
-            admin: false,
-            githubId: "24644341",
-            name:"Some Student",
-            email:null,
-            image_url:"https://avatars3.githubusercontent.com/u/24644341?v=4",
-            lastUpdated:"2021-01-04T21:53:24Z"
-        },
-        {
-            admin: false,
-            githubId: "52926639",
-            name:"Another Student",
-            email:null,
-            image_url:"https://avatars3.githubusercontent.com/u/52926639?v=4",
-            lastUpdated:"2021-01-04T21:53:24Z"
-        },
-    ])
+    // const users = await User.insertMany([
+    //     {
+    //         admin: true,
+    //         githubId: "34077185",
+    //         name:"Reinald Reynoso",
+    //         email:null,
+    //         image_url:"https://avatars3.githubusercontent.com/u/34077185?v=4",
+    //         lastUpdated:"2021-01-04T21:53:24Z"
+    //     },
+    //     {
+    //         admin: true,
+    //         githubId: "29000122",
+    //         name:"Another Admin",
+    //         email:null,
+    //         image_url:"https://avatars3.githubusercontent.com/u/29000122?v=4",
+    //         lastUpdated:"2021-01-04T21:53:24Z"
+    //     },
+    //     {
+    //         admin: false,
+    //         githubId: "24644341",
+    //         name:"Some Student",
+    //         email:null,
+    //         image_url:"https://avatars3.githubusercontent.com/u/24644341?v=4",
+    //         lastUpdated:"2021-01-04T21:53:24Z"
+    //     },
+    //     {
+    //         admin: false,
+    //         githubId: "52926639",
+    //         name:"Another Student",
+    //         email:null,
+    //         image_url:"https://avatars3.githubusercontent.com/u/52926639?v=4",
+    //         lastUpdated:"2021-01-04T21:53:24Z"
+    //     },
+    // ])
 
-    const cohorts = await Cohort.insertMany([
-        {
-            name: "DUMBO-040119",
-            admins: [users[0]]
-        },
-        {
-            name: "DUMBO-082619",
-            admins: [users[0]]
-        },{
-            name: "DUMBO-111819",
-            admins: [users[0]]
-        },
-        {
-            name: "DUMBO-042020",
-            admins: [users[1]]
-        }
-    ])
+    // const cohorts = await Cohort.insertMany([
+    //     {
+    //         name: "DUMBO-040119",
+    //         admins: [users[0]]
+    //     },
+    //     {
+    //         name: "DUMBO-082619",
+    //         admins: [users[0]]
+    //     },{
+    //         name: "DUMBO-111819",
+    //         admins: [users[0]]
+    //     },
+    //     {
+    //         name: "DUMBO-042020",
+    //         admins: [users[1]]
+    //     }
+    // ])
 
     // const blogs = await Blog.insertMany([
     //     {
@@ -173,38 +173,38 @@ const data = async() => {
     //     },
     // ])
 
-    links.forEach(async(link) => {
-        const {data} = await axios.get(link);
-        const $ = cheerio.load(data);
-        const title = $('meta[property="og:title"]').attr('content')
+    // links.forEach(async(link) => {
+    //     const {data} = await axios.get(link);
+    //     const $ = cheerio.load(data);
+    //     const title = $('meta[property="og:title"]').attr('content')
  
-        let image = $('img[alt="Image for post"]').attr('src')
-        if(image){
-            image = image.replace("60", "728");
-        }
+    //     let image = $('img[alt="Image for post"]').attr('src')
+    //     if(image){
+    //         image = image.replace("60", "728");
+    //     }
 
-        const tagsObj = {}
-        for(let i = 0; i < 3; i++){
-            const random = Math.floor(Math.random() * tags.length); 
-            if(!tagsObj[tags[random]]){
-                tagsObj[tags[random]] = tags[random]
-            }
-        }
-        // create the blog object
-        const randomUser = Math.floor(Math.random() * users.length);
-        const randomCohort = Math.floor(Math.random() * cohorts.length)
-        const blogObj = {
-            title,
-            link,
-            tags: tagsObj,
-            user: users[randomUser],
-            image,
-            cohort: cohorts[randomCohort]
-        }
+    //     const tagsObj = {}
+    //     for(let i = 0; i < 3; i++){
+    //         const random = Math.floor(Math.random() * tags.length); 
+    //         if(!tagsObj[tags[random]]){
+    //             tagsObj[tags[random]] = tags[random]
+    //         }
+    //     }
+    //     // create the blog object
+    //     const randomUser = Math.floor(Math.random() * users.length);
+    //     const randomCohort = Math.floor(Math.random() * cohorts.length)
+    //     const blogObj = {
+    //         title,
+    //         link,
+    //         tags: tagsObj,
+    //         user: users[randomUser],
+    //         image,
+    //         cohort: cohorts[randomCohort]
+    //     }
 
-        const blog = new Blog(blogObj);
-        await blog.save();
-    })
+    //     const blog = new Blog(blogObj);
+    //     await blog.save();
+    // })
 
     console.log('seed');
 }

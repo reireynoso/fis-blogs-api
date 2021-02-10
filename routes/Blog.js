@@ -124,6 +124,11 @@ router.post("/blog/new", auth, async(req,res) => {
             error.type = "link"
         }
 
+        if(error.code === 11000){
+            error.message = "This link already exists in our records"
+            error.type = "link"
+        }
+
         const errorObject = {
             type: error.type || null, 
             message: error.message || "N/A"
