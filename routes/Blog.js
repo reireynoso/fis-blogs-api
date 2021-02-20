@@ -139,9 +139,16 @@ router.post("/blog/new", auth, async(req,res) => {
         }
 
         const blog = new Blog(blogObj);
-        // await blog.save();
+        await blog.save();
         res.send({blog})
     } catch (error) {   
+        if(error.response){
+            if(error.response.status === 404){
+                error.message = "Not a valid link",
+                error.type = "link"
+            }
+            // console.log(error.response.status)
+        }
         // restructures axios error object
         if(error.code === "ECONNREFUSED"){
             error.message = "Not a valid link"
@@ -155,7 +162,7 @@ router.post("/blog/new", auth, async(req,res) => {
 
         const errorObject = {
             type: error.type || null, 
-            message: error.message || "N/A"
+            message: error.message || "Something went wrong. Please try again later."
         }
 
         res.send({error: errorObject})   
