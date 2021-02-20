@@ -8,11 +8,11 @@ const acceptableTags = require('../data/tags');
 const Cohort = require('../models/Cohort');
 const Blog = require('../models/Blog');
 
-router.get("/testing", (_,res) => {
+router.get("/testing", async(_,res) => {
     try {
         res.send("tested")
     } catch (error) {
-        res.send("error")
+        res.send({error: error.message})
     }
 })
 
@@ -68,8 +68,11 @@ router.patch("/blog/approve/:id", auth, async(req,res) => {
 router.post("/blog/new", auth, async(req,res) => {
     try {
         // const {data} = await axios.get("https://medium.com/@reireynoso/drag-ndrop-with-react-beautiful-dnd-73014e5937f2")
-        // const {data} = await axios.get("https://medium.com/@mandeep1012/function-declarations-vs-function-expressions-b43646042052#:~:text=The%20function%20statement%20declares%20a,must%20begin%20with%20%E2%80%9Cfunction%E2%80%9D.") 
-
+        // const {data} = await axios.get("https://medium.com/@mandeep1012/function-declarations-vs-function-expressions-b43646042052#:~:text=The%20function%20statement%20declares%20a,must%20begin%20with%20%E2%80%9Cfunction%E2%80%9D.")  
+        // const {data} = await axios.get("https://dev.to/reedbarger/how-to-fetch-data-in-react-cheatsheet-examples-3c4g") 
+        // const {data} = await axios.get("https://dev.to/derekmt12/put-down-the-destructuring-hammer-3n7d")
+        // const {data} = await axios.get("https://dev.to/abdullahsofiyu1/how-i-deal-with-imposter-syndromes-pg8")
+        // const {data} = await axios.get("https://js.plainenglish.io/javascript-basics-call-bind-and-apply-f1e425026f88") 
         const {cohort, link, tags} = req.body
         // iterate through tags and make sure they are acceptable
         for(let i = 0; i < tags.length; i++){
@@ -85,19 +88,40 @@ router.post("/blog/new", auth, async(req,res) => {
         const {data} = await axios.get(link); 
         
         const $ = cheerio.load(data);
-        const title = $('meta[property="og:title"]').attr('content')
-        if(!title){
-            throw new CustomError("link","Not a valid Medium Link")
+        // either something is returned from dev.to or medium
+        let domain = $('meta[name="application-name"]').attr('content') || $('meta[property="og:site_name"]').attr('content')
+        
+        if(domain !== "dev.to" && domain !== "Medium"){
+            throw new CustomError("link","Not a valid link. Please submit either a dev.to or Medium article.")
         }
-        // find the post image. By default it returns with size 60. Replace is switching it with a higher resolution
-        // default sample: https://miro.medium.com/max/60/some_image.png?q=20
-        // console.log($('img[alt="Image for post"]').attr('src').replace("60", "6000"));
-        let image = $('img[alt="Image for post"]').attr('src')
-        if(image){
+
+        if(domain === "dev.to"){
+            // to verify if dev.to article, look for specific tag
+            let devtoBlogElementCheck = $('div.crayons-article__header__meta');
+            if(!devtoBlogElementCheck.attr('class')){
+                throw new CustomError("link", "Not a valid dev.to article link")
+            }
+        }
+
+        if(domain === "Medium"){
+            // to verify if medium article, look for specific tag
+            let mediumBlogCheck = $('meta[name="parsely-post-id"]').attr('content')
+            if(!mediumBlogCheck){
+                throw new CustomError("link", "Not a valid Medium article link")
+            }
+        }
+
+        // title search applies for both medium and dev.to
+        const title = $('meta[property="og:title"]').attr('content');
+        // console.log(title);
+        // image path differs: dev.to structure | medium structure
+        let image = $(`img[alt="Cover image for ${title}"]`).attr('src') || $('img[alt="Image for post"]').attr('src');
+        if(image && domain === "Medium"){
             image = image.replace("60", "728");
         }
         // no image alternative link: https://www.dia.org/sites/default/files/No_Img_Avail.jpg
         // convert tags array values to object properties
+        
         const tagsObj = {}
         for(let i = 0; i < tags.length; i++){
             if(!tagsObj[tags[i]]){
@@ -115,7 +139,7 @@ router.post("/blog/new", auth, async(req,res) => {
         }
 
         const blog = new Blog(blogObj);
-        await blog.save();
+        // await blog.save();
         res.send({blog})
     } catch (error) {   
         // restructures axios error object
