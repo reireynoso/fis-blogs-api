@@ -30,7 +30,8 @@ router.get("/testing", async(_,res) => {
 
 router.post("/blog/delete/:id", auth, async(req,res) => {
     try {
-        if(!req.user.admin) throw new Error("User is not an admin. You cannot perform this action.")
+        const blog = await Blog.findOne({_id: req.params.id}).populate("user")
+        if(!req.user.admin && req.user._id.toString() !== blog.user._id.toString()) throw new Error("You cannot perform this action.")
         await Blog.deleteOne({_id: req.params.id})   
         res.send({message: "Blog deleted successfully"})
     } catch (error) {
@@ -42,11 +43,14 @@ router.post("/blog/delete/:id", auth, async(req,res) => {
 
 router.patch("/blog/approve/:id", auth, async(req,res) => {
     try{
-        const blog = await Blog.findById(req.params.id);
+        const blog = await Blog.findById(req.params.id).populate("cohort");
         // check if auth is an admin user. if not send error
         if(!req.user.admin){
             throw new Error("You're not an admin! You cannot perform this action.")
         }
+
+        let adminOfCohort = blog.cohort.admins.indexOf(req.user._id);
+        if(adminOfCohort < 0) throw new Error("You're not an admin of this cohort! You cannot perform this action")
 
         if(!blog){
             throw new Error("Blog does not exist in the database.")
