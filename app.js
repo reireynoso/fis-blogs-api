@@ -3,7 +3,7 @@ const cors = require('cors');
 const blogRoute = require('./routes/Blog');
 const userRoute = require('./routes/User');
 const cohortRoute = require('./routes/Cohort');
-const seedData = require('./db/Seed');
+const seedData = require('./db/seedFile');
 
 process.env.NODE_ENV === 'production' ? null : require('dotenv').config({path: './.env'});
 const connectDB = require('./db/mongoose')
@@ -24,5 +24,5 @@ app.use(cohortRoute);
 
 app.listen(port, () => {
     console.log(`Server is up on port ${port}`)
-    // seedData();
+    seedData();
 })

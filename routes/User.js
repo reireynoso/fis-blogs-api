@@ -122,6 +122,7 @@ router.patch('/user/:id', auth, async(req,res) => {
     try {
         if(!user) throw new Error("User does not exist.");
         if(!req.user.admin) throw new Error("You're not permitted to perform this action.")
+        if(user.githubId === process.env.GH_ID) throw new Error("Cannot change the admin privilege of this user.")
         user.admin = !user.admin;
         await user.save();
         res.status(200).send()
