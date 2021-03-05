@@ -77,6 +77,15 @@ userSchema.statics.findOrCreateOrUpdate = async(userData) => {
     return user
 }
 
+userSchema.pre('save', async function(next){
+    const user = this
+    
+    user.name = user.name ? user.name : "";
+    user.email = user.email ? user.email : "";
+
+    next()
+})
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
